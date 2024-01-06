@@ -27,7 +27,7 @@ public class Film {
     }
 
     public void setName(String name) {
-        if (!name.isEmpty()) {//null
+        if (!name.isEmpty() || name.isBlank()) {//null
             this.name = name;
         } else {
             throw new ValidationException("Пустое имя");
