@@ -12,7 +12,7 @@ public class FilmControllerTests {
 
     @Test
     void shouldNameBeNotEmpty() {
-        String excepted = "";
+        String excepted = "Avatar";
         film.setName(excepted);
         String actual = film.getName();
 
