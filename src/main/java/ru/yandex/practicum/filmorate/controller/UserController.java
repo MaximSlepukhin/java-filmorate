@@ -22,7 +22,7 @@ public class UserController {
 
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
-        if(user.getName() == null || user.getName().isEmpty()) {
+        if (user.getName() == null || user.getName().isEmpty()) {
             user.setName(user.getLogin());
         }
         if (user.getBirthday().isBefore(LocalDate.now())) {
