@@ -1,8 +1,11 @@
 package ru.yandex.practicum.filmorate.model;
 
 import lombok.Data;
-import ru.yandex.practicum.filmorate.exceptions.ValidationException;
+import ru.yandex.practicum.filmorate.annotations.HistoricalReleaseDate;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 /**
@@ -12,56 +15,18 @@ import java.time.LocalDate;
 @Data
 public class Film {
 
-    private static final Integer LENGTH_NAME = 200;// Можно будет перенсти
+    public int id;
 
-    private static final LocalDate START_TIME = LocalDate.of(1895, 12, 28);// Можно будет перенсти
+    @NotBlank
+    public String name;
 
-    private int id;
-    private String name;
-    private String description;
-    private LocalDate releaseDate;
-    private Integer duration;
+    @Size(min = 0, max = 200)
+    public String description;
 
-    public String getName() {
-        return name;
-    }
+    @HistoricalReleaseDate
+    public LocalDate releaseDate;
 
-    public void setName(String name) {
-        if (!name.isEmpty() || name.isBlank()) {//null
-            this.name = name;
-        } else {
-            throw new ValidationException("Пустое имя");
-        }
-    }
+    @Positive
+    public Integer duration;
 
-    public void setDescription(String description) {
-        if (description.length() <= LENGTH_NAME) {
-            this.description = description;
-        } else {
-            throw new ValidationException("Длина описания больше" + LENGTH_NAME);
-        }
-    }
-
-    public void setReleaseDate(LocalDate releaseDate) {
-        if (!releaseDate.isBefore(START_TIME)) {
-            this.releaseDate = releaseDate;
-        } else {
-            throw new ValidationException("Дата релиза раньше " + START_TIME);
-        }
-    }
-
-    public void setDuration(Integer duration) {
-        if (duration > 0) {
-            this.duration = duration;
-        } else {
-            throw new ValidationException("Отрицательное число");
-        }
-    }
-
-    public void chekTrue(Film film) {
-        setName(film.getName());
-        setDescription(film.getDescription());
-        setReleaseDate(film.getReleaseDate());
-        setDuration(film.getDuration());
-    }
 }

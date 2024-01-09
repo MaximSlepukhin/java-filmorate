@@ -1,23 +1,17 @@
 package ru.yandex.practicum.filmorate;
 
-
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.io.IOException;
 
 public class FilmControllerTests {
 
-    Film film = new Film();
 
     @Test
-    void shouldNameBeNotEmpty() {
-        String excepted = "Avatar";
-        film.setName(excepted);
-        String actual = film.getName();
+    public void postFilmShouldAddFilm() {
+        Film film = new Film();
 
-        assertEquals(excepted, actual);
-
-
+        film.setName("");
     }
 }

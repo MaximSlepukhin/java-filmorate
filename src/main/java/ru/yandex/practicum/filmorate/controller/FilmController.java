@@ -2,30 +2,37 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.annotations.HistoricalReleaseDateValidator;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
+import javax.validation.Valid;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/films")
 @Slf4j
+
 public class FilmController {
- //   private static final Logger log = LoggerFactory.getLogger(FilmController.class);// Можно использовать анотацию
+
     private Map<Integer, Film> films = new HashMap<>();
+    private int filmId = 1;
+
 
     @PostMapping
-    public Film postFilm(@RequestBody Film film) {// Можно пределать или в сет и здесь его вызывать или с помощью анотаций делать проверки
-          film.chekTrue(film);
+    public Film postFilm(@Valid @RequestBody Film film) throws IllegalAccessException {
+        log.info("Пришел запрос на добавление фильма");
+        HistoricalReleaseDateValidator.validate(film);
+        film.setId(filmId);
         films.put(film.getId(), film);
-        log.info("Добавлен фильм: {}", film); // Коректней будет выглядить ""
+        log.info("Добавлен фильм: {}", film);
         return film;
     }
 
     @PutMapping
-    public Film updateFilm(@RequestBody Film film) {
+    public Film updateFilm(@Valid @RequestBody Film film) throws IllegalAccessException {
         if (films.containsKey(film.getId())) {
             films.put(film.getId(), film);
         } else {
@@ -36,11 +43,8 @@ public class FilmController {
     }
 
     @GetMapping
-    public List<Film> getFilms() {
+    public Collection<Film> getFilms() {
         log.info("Возвращен список фильмов");
-        return (List<Film>) films.values(); // Доделать
-
+        return films.values();
     }
-
-
 }
