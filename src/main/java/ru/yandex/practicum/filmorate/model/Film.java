@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
 import lombok.Data;
-import ru.yandex.practicum.filmorate.annotations.HistoricalReleaseDate;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
@@ -23,7 +22,6 @@ public class Film {
     @Size(min = 0, max = 200)
     public String description;
 
-    @HistoricalReleaseDate
     public LocalDate releaseDate;
 
     @Positive
