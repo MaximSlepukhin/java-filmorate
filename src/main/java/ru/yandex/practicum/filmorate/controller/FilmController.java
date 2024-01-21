@@ -1,56 +1,71 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/films")
 @Slf4j
-
+@Service
 public class FilmController {
 
-    private Map<Integer, Film> films = new HashMap<>();
-    private int filmId = 1;
+    private final FilmService filmService;
+    public final static Integer TOP_10_FILM = 10;
+    private final FilmStorage filmStorage;
 
-    private static final LocalDate MIN_DATE_RELEASE = LocalDate.of(1895, 12, 28);
-
+    @Autowired
+    public FilmController(FilmService filmService, FilmStorage filmStorage) {
+        this.filmService = filmService;
+        this.filmStorage = filmStorage;
+    }
     @PostMapping
-    public Film postFilm(@Valid @RequestBody Film film) throws IllegalAccessException {
-        log.info("Пришел запрос на добавление фильма");
-        if (film.getReleaseDate().isBefore(MIN_DATE_RELEASE)) {
-            throw new ValidationException("Невозможно добавить фильм с датой релиза фильма ранее " + MIN_DATE_RELEASE);
-        }
-        film.setId(filmId);
-        films.put(film.getId(), film);
-        log.info("Добавлен фильм: {}", film);
-        return film;
+    @ResponseStatus(HttpStatus.CREATED)
+    public Film postFilm(@Valid @RequestBody Film film) {
+        return filmStorage.postFilm(film);
     }
 
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) throws IllegalAccessException {
-        if (film.getReleaseDate().isBefore(MIN_DATE_RELEASE)) {
-            throw new ValidationException("Невозможно добавить фильм с датой релиза фильма ранее " + MIN_DATE_RELEASE);
-        }
-        if (films.containsKey(film.getId())) {
-            films.put(film.getId(), film);
-        } else {
-            throw new ValidationException("Данного фильма не существует");
-        }
-        log.info("Фильм обновлен на {}", film);
-        return film;
+        return filmStorage.updateFilm(film);
+    }
+
+    @PutMapping("{id}/like/{userId}")
+    public void like(@PathVariable Integer id, @PathVariable Integer userId) {
+        filmService.like(id, userId);
     }
 
     @GetMapping
     public Collection<Film> getFilms() {
-        log.info("Возвращен список фильмов");
-        return films.values();
+        return filmStorage.getFilms();
+    }
+
+    @GetMapping(value = {"popular?count={count}", "popular"})
+    public Collection<Film> topFilms(@RequestParam Optional<Integer> count) {
+        if (count.isPresent()) {
+            return filmService.topFilms(count.get());
+        } else {
+            return filmService.topFilms(TOP_10_FILM);
+        }
+    }
+
+    @GetMapping("{id}")
+    public Film getFilmById(@PathVariable Integer id) {
+        return filmService.getFilmById(id);
+    }
+
+    @DeleteMapping("{id}/like/{userId}")
+    public void deleteLike(@PathVariable Integer id, @PathVariable Integer userId) {
+        filmService.deleteLike(id, userId);
     }
 }
+

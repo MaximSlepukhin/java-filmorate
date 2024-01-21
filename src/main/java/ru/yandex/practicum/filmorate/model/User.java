@@ -5,11 +5,13 @@ import lombok.Data;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
+import java.util.Set;
+import java.util.TreeSet;
 
 @Data
 public class User {
 
-    private int id;
+    private Integer id;
 
     @Email
     private String email;
@@ -20,5 +22,5 @@ public class User {
     private String name;
 
     private LocalDate birthday;
-
+    public Set<Integer> friends = new TreeSet<>();
 }
