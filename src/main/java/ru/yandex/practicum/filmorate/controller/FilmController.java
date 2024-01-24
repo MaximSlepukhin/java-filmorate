@@ -18,7 +18,7 @@ import java.util.Optional;
 public class FilmController {
 
     private final FilmService filmService;
-    public final Integer TOP_10_FILM = 10;
+    public final Integer topfilm = 10;
 
     @Autowired
     public FilmController(FilmService filmService) {
@@ -51,7 +51,7 @@ public class FilmController {
         if (count.isPresent()) {
             return filmService.topFilms(count.get());
         } else {
-            return filmService.topFilms(TOP_10_FILM);
+            return filmService.topFilms(topfilm);
         }
     }
 
