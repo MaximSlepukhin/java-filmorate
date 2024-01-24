@@ -19,6 +19,7 @@ public class ErrorHandler {
                 e.getMessage()
         );
     }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleFilmNotFoundException(final FilmNotFoundException e) {
@@ -26,6 +27,7 @@ public class ErrorHandler {
                 e.getMessage()
         );
     }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.OK)
     public ErrorResponse handleUserIdIsEmptyException(final UserIdIsEmptyException e) {
