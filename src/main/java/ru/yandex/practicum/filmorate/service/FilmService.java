@@ -49,9 +49,9 @@ public class FilmService {
     }
 
     public void addLike(Integer filmId, Integer userId) {
-        Integer idOfUser = userService.findUserById(userId).getId();
+        userService.checkId(userId);
         Film film = findFilmById(filmId);
-        film.likes.add(idOfUser);
+        film.likes.add(userId);
     }
 
     public void deleteLike(Integer filmId, Integer userId) {
