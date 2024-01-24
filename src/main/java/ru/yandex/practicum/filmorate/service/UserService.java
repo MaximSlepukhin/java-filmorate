@@ -59,6 +59,7 @@ public class UserService {
         userTwo.friends.remove(userOne.getId());
 
     }
+
     public void checkId(Integer id) {
         boolean isExist = userStorage.getUsers().stream().anyMatch(user -> user.getId() == id);
         if (!isExist) {
