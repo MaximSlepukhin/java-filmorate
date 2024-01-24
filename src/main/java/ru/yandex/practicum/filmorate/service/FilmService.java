@@ -55,9 +55,9 @@ public class FilmService {
     }
 
     public void deleteLike(Integer filmId, Integer userId) {
-        Integer idOfUser = userService.findUserById(userId).getId();
+        userService.checkId(userId);
         Film film = findFilmById(filmId);
-        film.likes.remove(idOfUser);
+        film.likes.remove(userId);
     }
 
     public Film findFilmById(Integer id) {
