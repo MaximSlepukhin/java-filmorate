@@ -3,10 +3,12 @@ package ru.yandex.practicum.filmorate.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,9 +17,10 @@ import java.util.stream.Collectors;
 public class FilmService {
 
     Integer count = 0;
+
+    private static final LocalDate MIN_DATE_RELEASE = LocalDate.of(1895, 12, 28);
     public final FilmStorage filmStorage;
     public final UserStorage userStorage;
-
     public final UserService userService;
 
     @Autowired
@@ -27,7 +30,25 @@ public class FilmService {
         this.userService = userService;
     }
 
-    public void like(Integer filmId, Integer userId) {
+    public Film postFilm(Film film) {
+        if (film.getReleaseDate().isBefore(MIN_DATE_RELEASE)) {
+            throw new ValidationException("Невозможно добавить фильм с датой релиза фильма ранее " + MIN_DATE_RELEASE);
+        }
+        return filmStorage.postFilm(film);
+    }
+
+    public Film updateFilm(Film film) {
+        if (film.getReleaseDate().isBefore(MIN_DATE_RELEASE)) {
+            throw new ValidationException("Невозможно добавить фильм с датой релиза фильма ранее " + MIN_DATE_RELEASE);
+        }
+        return filmStorage.updateFilm(film);
+    }
+
+    public Collection<Film> getFilms() {
+        return filmStorage.getFilms();
+    }
+
+    public void addLike(Integer filmId, Integer userId) {
         Integer idOfUser = userService.findUserById(userId).getId();
         Film film = findFilmById(filmId);
         film.likes.add(idOfUser);

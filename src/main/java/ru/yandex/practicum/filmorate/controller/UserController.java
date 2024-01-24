@@ -18,24 +18,21 @@ import java.util.Set;
 @RequestMapping("/users")
 public class UserController {
 
-    private final UserStorage userStorage;
-
     private final UserService userService;
 
     @Autowired
-    public UserController(UserStorage userStorage, UserService userService) {
-        this.userStorage = userStorage;
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
-        return userStorage.createUser(user);
+        return userService.createUser(user);
     }
 
     @PutMapping
     public User updateUser(@Valid @RequestBody User user) {
-        return userStorage.updateUser(user);
+        return userService.updateUser(user);
     }
 
     @PutMapping("{id}/friends/{friendId}")
@@ -48,7 +45,7 @@ public class UserController {
     @GetMapping
     @Valid
     public Collection<User> getUsers() {
-        return userStorage.getUsers();
+        return userService.getUsers();
     }
 
     @GetMapping("{id}/friends")
