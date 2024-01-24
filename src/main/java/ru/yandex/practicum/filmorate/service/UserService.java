@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
 
-    public final UserStorage userStorage;
+    private final UserStorage userStorage;
 
     @Autowired
     public UserService(UserStorage userStorage) {
@@ -67,7 +67,7 @@ public class UserService {
         }
     }
 
-    public Set<User> friendsList(Integer id) {
+    public Set<User> getListOfFriends(Integer id) {
         checkId(id);
         Set<User> friendList = userStorage.getUsers().stream()
                 .filter(u -> findUserById(id).friends.contains(u.getId()))
@@ -77,11 +77,11 @@ public class UserService {
         return result;
     }
 
-    public List<User> listOfCommonFriends(Integer id, Integer otherId) {
+    public List<User> getListOfCommonFriends(Integer id, Integer otherId) {
         checkId(id);
         checkId(otherId);
-        return friendsList(id).stream()
-                .filter(f -> friendsList(otherId).contains(f))
+        return getListOfFriends(id).stream()
+                .filter(f -> getListOfFriends(otherId).contains(f))
                 .collect(Collectors.toList());
     }
 

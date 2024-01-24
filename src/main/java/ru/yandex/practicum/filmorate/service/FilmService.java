@@ -19,14 +19,14 @@ public class FilmService {
     Integer count = 0;
 
     private static final LocalDate MIN_DATE_RELEASE = LocalDate.of(1895, 12, 28);
-    public final FilmStorage filmStorage;
-    public final UserStorage userStorage;
-    public final UserService userService;
+
+    private final FilmStorage filmStorage;
+
+    private final UserService userService;
 
     @Autowired
-    public FilmService(FilmStorage filmStorage, UserStorage userStorage, UserService userService) {
+    public FilmService(FilmStorage filmStorage, UserService userService) {
         this.filmStorage = filmStorage;
-        this.userStorage = userStorage;
         this.userService = userService;
     }
 
@@ -61,6 +61,7 @@ public class FilmService {
     }
 
     public Film findFilmById(Integer id) {
+        checkFilmId(id);
         Collection<Film> films = filmStorage.getFilms();
         Optional<Film> film = films.stream()
                 .filter(film1 -> film1.getId() == id)
@@ -75,14 +76,14 @@ public class FilmService {
                 .collect(Collectors.toList());
     }
 
-    public Film getFilmById(Integer id) {
+    /*public Film getFilmById(Integer id) {
         checkFilmId(id);
         Collection<Film> films = filmStorage.getFilms();
         Optional<Film> film = films.stream()
                 .filter(f -> f.getId() == id)
                 .findFirst();
         return film.orElse(null);
-    }
+    }*/
 
     public void checkFilmId(Integer id) {
         boolean isExist = filmStorage.getFilms().stream().anyMatch(film -> film.getId() == id);
