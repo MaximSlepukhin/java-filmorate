@@ -26,10 +26,10 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film updateFilm(Film film) {
         if (films.containsKey(film.getId())) {
+            films.put(film.getId(), film);
         } else {
             throw new ValidationException("Данного фильма не существует");
         }
-        films.put(film.getId(), film);
         log.info("Фильм обновлен на {}", film);
         return film;
     }
