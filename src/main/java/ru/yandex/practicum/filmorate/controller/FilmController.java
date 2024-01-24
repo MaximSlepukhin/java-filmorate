@@ -18,12 +18,13 @@ import java.util.Optional;
 public class FilmController {
 
     private final FilmService filmService;
-    public final static Integer TOP_10_FILM = 10;
+    public final Integer TOP_10_FILM = 10;
 
     @Autowired
     public FilmController(FilmService filmService) {
         this.filmService = filmService;
     }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Film postFilm(@Valid @RequestBody Film film) {
