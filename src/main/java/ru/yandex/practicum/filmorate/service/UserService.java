@@ -35,8 +35,8 @@ public class UserService {
     }
 
     public void addFriend(Integer id, Integer friendId) {
-        checkId(id);
-        checkId(friendId);
+        checkIfUserExists(id);
+        checkIfUserExists(friendId);
 
         User userOne = findUserById(id);
         User userTwo = findUserById(friendId);
@@ -49,18 +49,18 @@ public class UserService {
         if (id.equals(friendId)) {
             throw new ValidationException("id равен friendId");
         }
-        checkId(id);
-        checkId(friendId);
+        checkIfUserExists(id);
+        checkIfUserExists(friendId);
 
-        User userOne = findUserById(id);
-        User userTwo = findUserById(friendId);
+        User firstUser = findUserById(id);
+        User secondUser = findUserById(friendId);
 
-        userOne.friends.remove(userTwo.getId());
-        userTwo.friends.remove(userOne.getId());
+        firstUser.friends.remove(secondUser.getId());
+        secondUser.friends.remove(firstUser.getId());
 
     }
 
-    public void checkId(Integer id) {
+    public void checkIfUserExists(Integer id) {
         boolean isExist = userStorage.getUsers().stream().anyMatch(user -> user.getId() == id);
         if (!isExist) {
             throw new UserNotFoundException("Пользователя c id=" + id + " не сушествует");
@@ -68,7 +68,7 @@ public class UserService {
     }
 
     public Set<User> getListOfFriends(Integer id) {
-        checkId(id);
+        checkIfUserExists(id);
         Set<User> friendList = userStorage.getUsers().stream()
                 .filter(u -> findUserById(id).friends.contains(u.getId()))
                 .collect(Collectors.toSet());
@@ -78,21 +78,16 @@ public class UserService {
     }
 
     public List<User> getListOfCommonFriends(Integer id, Integer otherId) {
-        checkId(id);
-        checkId(otherId);
+        checkIfUserExists(id);
+        checkIfUserExists(otherId);
         return getListOfFriends(id).stream()
                 .filter(f -> getListOfFriends(otherId).contains(f))
                 .collect(Collectors.toList());
     }
 
     public User findUserById(Integer id) {
-        checkId(id);
-        Collection<User> users = userStorage.getUsers();
-        Optional<User> user = users.stream()
-                .filter(user1 -> user1.getId() == id)
-                .findFirst();
-        return user.orElse(null);
-
+        checkIfUserExists(id);
+        return userStorage.findUserById(id);
     }
 }
 

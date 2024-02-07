@@ -4,9 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 
@@ -38,5 +40,14 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Collection<Film> getFilms() {
         log.info("Возвращен список фильмов");
         return films.values();
+    }
+
+    @Override
+    public Film getFilmById(Integer id) {
+        Collection<Film> films = getFilms();
+        Optional<Film> film = films.stream()
+                .filter(film1 -> film1.getId() == id)
+                .findFirst();
+        return film.orElse(null);
     }
 }

@@ -6,10 +6,7 @@ import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -49,5 +46,14 @@ public class InMemoryUserStrorage implements UserStorage {
     public Collection<User> getUsers() {
         log.info("Возвращен список пользователей");
         return users.values();
+    }
+
+    @Override
+    public User findUserById(Integer id) {
+        Collection<User> users = getUsers();
+        Optional<User> user = users.stream()
+                .filter(user1 -> user1.getId() == id)
+                .findFirst();
+        return user.orElse(null);
     }
 }

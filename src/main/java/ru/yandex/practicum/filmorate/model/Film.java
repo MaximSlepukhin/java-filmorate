@@ -17,20 +17,20 @@ import java.util.TreeSet;
 @Data
 public class Film {
 
-    public int id;
+    private int id;
 
     @NotBlank
-    public String name;
+    private String name;
 
     @Size(min = 0, max = 200)
-    public String description;
+    private String description;
 
-    public LocalDate releaseDate;
+    private LocalDate releaseDate;
 
     @Positive
-    public Integer duration;
+    private Integer duration;
 
-    public Set<Integer> likes = new TreeSet<>();
+    private Set<Integer> likes = new TreeSet<>();
 
-    public List<Film> film;
+    private List<Film> film;
 }
