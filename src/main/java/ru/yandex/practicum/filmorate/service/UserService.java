@@ -41,8 +41,8 @@ public class UserService {
         User userOne = findUserById(id);
         User userTwo = findUserById(friendId);
 
-        userOne.friends.add(friendId);
-        userTwo.friends.add(id);
+        userOne.getFriends().add(friendId);
+        userTwo.getFriends().add(id);
     }
 
     public void deleteFriend(Integer id, Integer friendId) {
@@ -55,8 +55,8 @@ public class UserService {
         User firstUser = findUserById(id);
         User secondUser = findUserById(friendId);
 
-        firstUser.friends.remove(secondUser.getId());
-        secondUser.friends.remove(firstUser.getId());
+        firstUser.getFriends().remove(secondUser.getId());
+        secondUser.getFriends().remove(firstUser.getId());
 
     }
 
@@ -70,7 +70,7 @@ public class UserService {
     public Set<User> getListOfFriends(Integer id) {
         checkIfUserExists(id);
         Set<User> friendList = userStorage.getUsers().stream()
-                .filter(u -> findUserById(id).friends.contains(u.getId()))
+                .filter(u -> findUserById(id).getFriends().contains(u.getId()))
                 .collect(Collectors.toSet());
         Set<User> result = new TreeSet<>(Comparator.comparingInt(User::getId));
         result.addAll(friendList);

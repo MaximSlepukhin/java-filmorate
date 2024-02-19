@@ -33,4 +33,8 @@ public class Film {
     private Set<Integer> likes = new TreeSet<>();
 
     private List<Film> film;
+
+    private String genre;
+
+    private String rating;
 }

@@ -22,5 +22,9 @@ public class User {
     private String name;
 
     private LocalDate birthday;
-    public Set<Integer> friends = new TreeSet<>();
+
+    private Set<Integer> friends = new TreeSet<>();
+
+    private Set<Integer> unapprovedFriends = new TreeSet<>();
+
 }
