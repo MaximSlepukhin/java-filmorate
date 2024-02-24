@@ -26,13 +26,13 @@ public class UserController {
 
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
-        log.info("Запрс на создание пользователя принят.");
+        log.info("Запрос на создание пользователя принят.");
         return userService.createUser(user);
     }
 
     @PutMapping
     public User updateUser(@Valid @RequestBody User user) {
-        log.info("Запрс на обновление пользователя принят.");
+        log.info("Запрос на обновление пользователя принят.");
         return userService.updateUser(user);
     }
 
@@ -57,13 +57,13 @@ public class UserController {
 
     @GetMapping("{id}/friends/common/{otherId}")
     public List<User> getListOfCommonFriends(@PathVariable Integer id, @PathVariable Integer otherId) {
-        log.info("Запрс на получение общего списка друзей принят.");
+        log.info("Запрос на получение общего списка друзей принят.");
         return userService.getListOfCommonFriends(id, otherId);
     }
 
     @GetMapping("{id}")
     public User findUserById(@PathVariable Integer id) {
-        log.info("Запрс на получение пользователя по id принят.");
+        log.info("Запрос на получение пользователя по id принят.");
         return userService.findUserById(id);
     }
 

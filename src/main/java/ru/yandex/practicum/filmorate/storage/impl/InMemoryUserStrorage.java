@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 @Slf4j
-@Component
+//@Component
 public class InMemoryUserStrorage implements UserStorage {
     public Map<Integer, User> users = new TreeMap<>();
 

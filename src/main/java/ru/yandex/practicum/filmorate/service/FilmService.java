@@ -5,11 +5,12 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,23 +21,30 @@ public class FilmService {
 
     private final UserService userService;
 
+    private final GenreService genreService;
+
     private Integer count = 0;
 
     @Autowired
-    public FilmService(FilmStorage filmStorage, UserService userService) {
+    public FilmService(FilmStorage filmStorage, UserService userService, GenreService genreService) {
         this.filmStorage = filmStorage;
         this.userService = userService;
+        this.genreService = genreService;
     }
 
     public Film postFilm(Film film) {
         if (film.getReleaseDate().isBefore(MIN_DATE_RELEASE)) {
             throw new ValidationException("Невозможно добавить фильм с датой релиза фильма ранее " + MIN_DATE_RELEASE);
         }
-        return filmStorage.postFilm(film);
+        Film addedFilm = filmStorage.postFilm(film);
+        if (film.getGenres() != null) {
+            genreService.addGenresForFilm(film.getGenres(), addedFilm.getId());
+        }
+        return addedFilm;
     }
 
     public Film getFilmById(Integer id) {
-        checkIfFilmExists(id);
+        //checkIfFilmExists(id);
         return filmStorage.getFilmById(id);
     }
 
@@ -64,12 +72,15 @@ public class FilmService {
     }
 
     public Film findFilmById(Integer id) {
-        checkIfFilmExists(id);
+        /*checkIfFilmExists(id);
         Collection<Film> films = filmStorage.getFilms();
         Optional<Film> film = films.stream()
                 .filter(film1 -> film1.getId() == id)
                 .findFirst();
-        return film.orElse(null);
+
+        return film.orElse(null);*/
+
+        return filmStorage.getFilmById(id);
     }
 
     public Collection<Film> topFilms(Integer count) {

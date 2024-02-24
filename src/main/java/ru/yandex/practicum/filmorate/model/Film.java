@@ -7,9 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * Film.
@@ -30,11 +28,10 @@ public class Film {
     @Positive
     private Integer duration;
 
-    private Set<Integer> likes = new TreeSet<>();
+    private MPARating mpa;
 
-    private List<Film> film;
+    private Set<Integer> likes;
 
-    private String genre;
+    private Set<Genre> genres;
 
-    private String rating;
 }
