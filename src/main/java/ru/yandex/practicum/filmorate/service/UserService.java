@@ -35,29 +35,14 @@ public class UserService {
     }
 
     public void addFriend(Integer id, Integer friendId) {
-        checkIfUserExists(id);
-        checkIfUserExists(friendId);
-
-        User userOne = findUserById(id);
-        User userTwo = findUserById(friendId);
-
-        userOne.getFriends().add(friendId);
-        userTwo.getFriends().add(id);
+        userStorage.addFriend(id, friendId);
     }
 
     public void deleteFriend(Integer id, Integer friendId) {
         if (id.equals(friendId)) {
             throw new ValidationException("id равен friendId");
         }
-        checkIfUserExists(id);
-        checkIfUserExists(friendId);
-
-        User firstUser = findUserById(id);
-        User secondUser = findUserById(friendId);
-
-        firstUser.getFriends().remove(secondUser.getId());
-        secondUser.getFriends().remove(firstUser.getId());
-
+        userStorage.deleteFriend(id, friendId);
     }
 
     public void checkIfUserExists(Integer id) {
@@ -67,22 +52,12 @@ public class UserService {
         }
     }
 
-    public Set<User> getListOfFriends(Integer id) {
-        checkIfUserExists(id);
-        Set<User> friendList = userStorage.getUsers().stream()
-                .filter(u -> findUserById(id).getFriends().contains(u.getId()))
-                .collect(Collectors.toSet());
-        Set<User> result = new TreeSet<>(Comparator.comparingInt(User::getId));
-        result.addAll(friendList);
-        return result;
+    public List<User> getListOfFriends(Integer id) {
+        return userStorage.getListOfFriends(id);
     }
 
     public List<User> getListOfCommonFriends(Integer id, Integer otherId) {
-        checkIfUserExists(id);
-        checkIfUserExists(otherId);
-        return getListOfFriends(id).stream()
-                .filter(f -> getListOfFriends(otherId).contains(f))
-                .collect(Collectors.toList());
+        return userStorage.getListOfCommonFriends(id, otherId);
     }
 
     public User findUserById(Integer id) {

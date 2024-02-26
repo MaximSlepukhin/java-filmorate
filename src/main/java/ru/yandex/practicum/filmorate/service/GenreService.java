@@ -23,7 +23,15 @@ public class GenreService {
         return genreStorage.getGenres();
     }
 
-    public Set<Genre> addGenresForFilm(Set<Genre> genresFromFilm, Integer id)  {
-        return genreStorage.addGenresForFilm(genresFromFilm,id);
+    public Set<Genre> addGenresForFilm(Set<Genre> genresFromFilm, Integer id) {
+        return genreStorage.addGenresForFilm(genresFromFilm, id);
+    }
+
+    public Set<Genre> updateGenresForFilm(Set<Genre> genresFromFilm, Integer id) {
+        return genreStorage.updateGenresForFilm(genresFromFilm, id);
+    }
+
+    Set<Genre> setGenresForFilmList(Integer filmId) {
+        return genreStorage.setGenresForFilmList(filmId);
     }
 }

@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.exceptions.MPANotFoundException;
 import ru.yandex.practicum.filmorate.model.MPARating;
 import ru.yandex.practicum.filmorate.storage.MPARatingStorage;
 
@@ -32,8 +32,9 @@ public class MPARatingDbStorage implements MPARatingStorage {
         if (mpaRatingRow.next()) {
             mpaRating.setId(mpaRatingRow.getInt("mpa_id"));
             mpaRating.setName(mpaRatingRow.getString("mpa_name"));
-        } else{
-            log.info("Жанр с идентификаторм {} " + id + "отсутствует в базе данных");
+        } else {
+            log.info("Жанр с идентификаторм" + id + " отсутствует в базе данных");
+            throw new MPANotFoundException("Рейтинг с id = " + id + " не найден.");
         }
         return  mpaRating;
     }

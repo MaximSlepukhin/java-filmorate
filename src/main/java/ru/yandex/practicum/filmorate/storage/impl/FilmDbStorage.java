@@ -9,7 +9,6 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.MPARating;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
@@ -108,7 +107,6 @@ public class FilmDbStorage implements FilmStorage {
         mpaRating.setName(rs.getString("mpa_name"));
         film.setMpa(mpaRating);
         film.setLikes(getLikes(film.getId()));
-        film.setGenres(getGenres(film.getId()));
         return film;
     }
 
@@ -125,19 +123,32 @@ public class FilmDbStorage implements FilmStorage {
         return new HashSet<>(likes);
     }
 
-    private Set<Genre> getGenres(Integer filmId) {
-        String genresQuery = "SELECT * " +
-                "FROM film_genre AS fg " +
-                "JOIN genre AS g ON fg.genre_id = g.genre_id " +
-                "WHERE fg.film_id = ?";
-        List<Genre> genres = jdbcTemplate.query(genresQuery, (rs, a) -> mapGenres(rs), filmId);
-        return new HashSet<>(genres);
+    @Override
+    public void addLike(Integer filmId, Integer userId) {
+        String insertQuery = "insert into likes (film_id, user_id) values (?, ?)";
+        jdbcTemplate.update(insertQuery, filmId, userId);
     }
 
-    private Genre mapGenres(ResultSet rs) throws SQLException {
-        Genre genre = new Genre();
-        genre.setId(rs.getInt("genre_id"));
-        genre.setName(rs.getString("genre_name"));
-        return genre;
+    @Override
+    public void deleteLike(Integer filmId, Integer userId) {
+        String insertQuery = "delete from likes where film_id = ? AND user_id = ?";
+
+        int updateRows = jdbcTemplate.update(insertQuery, filmId, userId);
+        if (updateRows == 0) {
+            throw new FilmNotFoundException("Фильм с id = " + filmId + "либо user_id =" + userId + " не найден.");
+        }
     }
+
+    @Override
+    public Collection<Film> getPopularFilms(Integer limit) {
+        String query = "SELECT f.*, m.MPA_NAME " +
+                "FROM film AS f " +
+                "LEFT JOIN likes AS l ON f.film_id = l.FILM_ID " +
+                "JOIN mpa AS m ON f.MPA_ID = m.MPA_ID " +
+                "GROUP BY f.FILM_ID " +
+                "ORDER BY count (l.user_ID)  DESC LIMIT ?";
+        List<Film> topFilms = jdbcTemplate.query(query, (rs, i) -> mapFilm(rs), limit);
+        return topFilms;
+    }
+
 }

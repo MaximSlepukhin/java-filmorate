@@ -34,6 +34,14 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleMPANotFoundException(final MPANotFoundException e) {
+        return new ErrorResponse(
+                e.getMessage()
+        );
+    }
+
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.OK)
     public ErrorResponse handleUserIdIsEmptyException(final UserIdIsEmptyException e) {
         return new ErrorResponse(

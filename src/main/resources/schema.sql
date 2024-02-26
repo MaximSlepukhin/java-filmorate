@@ -20,8 +20,7 @@ film_name varchar,
 description varchar,
 release_date date,
 duration integer,
-mpa_id integer REFERENCES mpa (mpa_id) ON DELETE CASCADE,
-genre_id integer REFERENCES genre (genre_id) ON DELETE CASCADE);
+mpa_id integer REFERENCES mpa (mpa_id) ON DELETE CASCADE);
 
 CREATE TABLE IF NOT EXISTS film_genre (
 film_id INTEGER REFERENCES film (film_id) ON DELETE CASCADE,

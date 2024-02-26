@@ -30,6 +30,5 @@ public class User {
 
     //private Set<Integer> unapprovedFriends = new TreeSet<>();
 
-    //добавил поле с фильмами, которые лайкнул пользователь
     private Set<Integer> likedFilms;
 }

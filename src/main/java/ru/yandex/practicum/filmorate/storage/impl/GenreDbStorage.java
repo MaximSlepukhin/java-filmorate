@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 @Slf4j
 @Component
@@ -47,11 +48,11 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public List<Genre> getGenres() {
-        String queryMPARating = "SELECT * FROM genre";
-        return jdbcTemplate.query(queryMPARating, this::mapRow);
+        String queryGenre = "SELECT * FROM genre ORDER BY genre_id ASC";
+        return jdbcTemplate.query(queryGenre, this::mapRow);
     }
 
-    public Genre mapRow(ResultSet resultSet, int rowMow) throws SQLException {
+    public Genre mapRow(ResultSet resultSet, int rowNow) throws SQLException {
         Genre genre = new Genre();
         genre.setId(resultSet.getInt("genre_id"));
         genre.setName(resultSet.getString("genre_name"));
@@ -79,6 +80,30 @@ public class GenreDbStorage implements GenreStorage {
                 return genreList.size();
             }
         });
-        return genresFromFilm;
+        return new TreeSet<>(genresFromFilm);
+    }
+
+    @Override
+    public Set<Genre> updateGenresForFilm(Set<Genre> genresFromFilm, Integer filmId) {
+        String deleteSql = "DELETE FROM film_genre WHERE film_id = ?";
+        jdbcTemplate.update(deleteSql, filmId);
+        return new TreeSet<>(addGenresForFilm(genresFromFilm, filmId));
+    }
+
+    @Override
+    public Set<Genre> setGenresForFilmList(Integer filmId) {
+        String genresQuery = "SELECT * " +
+                "FROM film_genre AS fg " +
+                "JOIN genre AS g ON fg.genre_id = g.genre_id " +
+                "WHERE fg.film_id = ?";
+        List<Genre> genres = jdbcTemplate.query(genresQuery, (rs, a) -> mapGenres(rs), filmId);
+        return new TreeSet<>(genres);
+    }
+
+    public Genre mapGenres(ResultSet rs) throws SQLException {
+        Genre genre = new Genre();
+        genre.setId(rs.getInt("genre_id"));
+        genre.setName(rs.getString("genre_name"));
+        return genre;
     }
 }

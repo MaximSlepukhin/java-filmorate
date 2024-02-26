@@ -5,6 +5,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -100,6 +101,37 @@ public class UserDbStorage implements UserStorage {
         return user;
     }
 
+    @Override
+    public List<User> getListOfFriends(Integer id) {
+        String sqlQuery = "SELECT u.user_id, u.email, u.login, u.user_name, u.birthday " +
+                "FROM users AS u " +
+                "JOIN friendship AS f ON u.user_id = f.friend_id " +
+                "WHERE f.user_id = ?";
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet(sqlQuery, id);
+        List<User> listOfFriends = jdbcTemplate.query(sqlQuery, (rs, a) -> mapUser(rs), id);
+        return listOfFriends;
+    }
+
+    @Override
+    public List<User> getListOfCommonFriends(Integer id, Integer otherId) {
+        return null;
+    }
+
+    @Override
+    public void addFriend(Integer id, Integer friendId) {
+        String sqlQuery = "insert into friendship (user_id, friend_id) values (?, ?)";
+        int count = jdbcTemplate.update(sqlQuery, id, friendId);
+        if (count == 0) {
+            throw new UserNotFoundException("Пользователя с id = " + id + " либо с id = " + friendId + "не существует");
+        }
+    }
+
+    @Override
+    public void deleteFriend(Integer id, Integer friendId) {
+        String sqlQuery = "DELETE FROM friendship WHERE user_id = ? AND friend_id = ?";
+        jdbcTemplate.update(sqlQuery, id, friendId);
+    }
+
     private User mapUser(ResultSet rs) throws SQLException {
         User user = new User();
         user.setId(rs.getInt(1));
@@ -113,5 +145,35 @@ public class UserDbStorage implements UserStorage {
     private Integer mapLikes(ResultSet rs) throws SQLException {
         return rs.getInt("film_id");
     }
+
+    /*public void deleteFriend(Integer id, Integer friendId) {
+
+    }
+
+    public Set<User> getListOfFriends(Integer userId) {
+
+    }
+
+    public void addFriend(User user, User friend) {
+        int userId = user.getId();
+        //необходимо получить сет друзей
+        Set<User> friends = getListOfFriends(userId);
+        //добавляем друга в сет
+        friends.add(friend);
+        //необходимо добавить новые данные в таблицу friendship
+        String sqlInsert = "merge into friendship(user_id, friend_id) KEY (user_id, friend_id) VALUES (?, ?)";
+        jdbcTemplate.update(sqlInsert,userId,friend.getId());
+    }
+
+    /*public List<User> getListOfCommonFriends(User userOne, User userTwo) {
+        int userOneId = userOne.getId();
+        int userTwoId = userTwo.getId();
+
+        List<User> commonFriends = new ArrayList<>();
+        return null;
+    }*/
+
 }
+
+
 

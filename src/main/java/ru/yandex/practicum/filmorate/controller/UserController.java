@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.IncorrectCountException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
+
 import javax.validation.Valid;
 import java.util.Collection;
 import java.util.List;
@@ -50,7 +51,7 @@ public class UserController {
     }
 
     @GetMapping("{id}/friends")
-    public Set<User> getListOfFriends(@PathVariable Integer id) {
+    public List<User> getListOfFriends(@PathVariable Integer id) {
         log.info("Запрс на получение списка друзей принят.");
         return userService.getListOfFriends(id);
     }
@@ -76,5 +77,6 @@ public class UserController {
         if (friendId <= 0 && id == null) {
             throw new IncorrectCountException("Параметр count имеет отрицательное значение.");
         }
+        userService.deleteFriend(id, friendId);
     }
 }
