@@ -108,7 +108,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<User> getListOfCommonFriends(Integer id, Integer otherId) {
-//дорабатываю метод
+    //дорабатываю метод
         return null;
     }
 
