@@ -5,7 +5,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -95,7 +94,7 @@ public class UserDbStorage implements UserStorage {
         } catch (DataAccessException e) {
             throw new UserNotFoundException("Пользователь с id " + id + " не найден");
         }
-        List<Integer> likes = jdbcTemplate.query(likesQuery, (rs, a) -> mapLikes(rs), id);
+        //List<Integer> likes = jdbcTemplate.query(likesQuery, (rs, a) -> mapLikes(rs), id);
         user.setLikedFilms(new HashSet<>());
         user.setFriends(new HashSet<>());
         return user;
@@ -113,13 +112,10 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<User> getListOfCommonFriends(Integer id, Integer otherId) {
-        String sqlQuery = "SELECT f1.friend_id, u.email, u.login, u.user_name, u.birthday " +
-                "FROM friendship AS f1 " +
-                "JOIN friendship AS f2 ON f1.friend_id = f2.friend_id " +
-                "JOIN users AS u ON u.user_id = f2.friend_id " +
-                "WHERE f1.user_id = ? AND f2.user_id = ?";
+        /*//дорабатываю метод
         List<User> listOfFriends = jdbcTemplate.query(sqlQuery, (rs, a) -> mapUser(rs), id);
-        return listOfFriends;
+        return listOfFriends;*/
+        return null;
     }
 
     @Override
