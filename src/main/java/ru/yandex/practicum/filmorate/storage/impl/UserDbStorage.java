@@ -107,14 +107,19 @@ public class UserDbStorage implements UserStorage {
                 "FROM users AS u " +
                 "JOIN friendship AS f ON u.user_id = f.friend_id " +
                 "WHERE f.user_id = ?";
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet(sqlQuery, id);
         List<User> listOfFriends = jdbcTemplate.query(sqlQuery, (rs, a) -> mapUser(rs), id);
         return listOfFriends;
     }
 
     @Override
     public List<User> getListOfCommonFriends(Integer id, Integer otherId) {
-        return null;
+        String sqlQuery = "SELECT f1.friend_id, u.email, u.login, u.user_name, u.birthday " +
+                "FROM friendship AS f1 " +
+                "JOIN friendship AS f2 ON f1.friend_id = f2.friend_id " +
+                "JOIN users AS u ON u.user_id = f2.friend_id " +
+                "WHERE f1.user_id = ? AND f2.user_id = ?";
+        List<User> listOfFriends = jdbcTemplate.query(sqlQuery, (rs, a) -> mapUser(rs), id);
+        return listOfFriends;
     }
 
     @Override
@@ -145,34 +150,6 @@ public class UserDbStorage implements UserStorage {
     private Integer mapLikes(ResultSet rs) throws SQLException {
         return rs.getInt("film_id");
     }
-
-    /*public void deleteFriend(Integer id, Integer friendId) {
-
-    }
-
-    public Set<User> getListOfFriends(Integer userId) {
-
-    }
-
-    public void addFriend(User user, User friend) {
-        int userId = user.getId();
-        //необходимо получить сет друзей
-        Set<User> friends = getListOfFriends(userId);
-        //добавляем друга в сет
-        friends.add(friend);
-        //необходимо добавить новые данные в таблицу friendship
-        String sqlInsert = "merge into friendship(user_id, friend_id) KEY (user_id, friend_id) VALUES (?, ?)";
-        jdbcTemplate.update(sqlInsert,userId,friend.getId());
-    }
-
-    /*public List<User> getListOfCommonFriends(User userOne, User userTwo) {
-        int userOneId = userOne.getId();
-        int userTwoId = userTwo.getId();
-
-        List<User> commonFriends = new ArrayList<>();
-        return null;
-    }*/
-
 }
 
 
