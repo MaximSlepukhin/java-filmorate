@@ -108,8 +108,13 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<User> getListOfCommonFriends(Integer id, Integer otherId) {
-    //дорабатываю метод
-        return null;
+        String sqlQuery = "SELECT f1.friend_id, u.email, u.login, u.user_name, u.birthday " +
+                "FROM friendship AS f1 " +
+                "JOIN friendship AS f2 ON f1.friend_id = f2.friend_id " +
+                "JOIN users AS u ON u.user_id = f2.friend_id " +
+                "WHERE f1.user_id = ? AND f2.user_id = ?";
+        List<User> listOfFriends = jdbcTemplate.query(sqlQuery, (rs, a) -> mapUser(rs), id, otherId);
+        return listOfFriends;
     }
 
     @Override
