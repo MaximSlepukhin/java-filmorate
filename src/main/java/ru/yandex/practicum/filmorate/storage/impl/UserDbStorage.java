@@ -85,16 +85,12 @@ public class UserDbStorage implements UserStorage {
         String userQuery = "SELECT * " +
                 "FROM users AS u " +
                 "WHERE u.user_id = ?";
-        String likesQuery = "SELECT * " +
-                "FROM likes " +
-                "WHERE user_id = ?";
         User user = null;
         try {
             user = jdbcTemplate.queryForObject(userQuery, (rs, a) -> mapUser(rs), id);
         } catch (DataAccessException e) {
             throw new UserNotFoundException("Пользователь с id " + id + " не найден");
         }
-        //List<Integer> likes = jdbcTemplate.query(likesQuery, (rs, a) -> mapLikes(rs), id);
         user.setLikedFilms(new HashSet<>());
         user.setFriends(new HashSet<>());
         return user;
@@ -112,19 +108,17 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<User> getListOfCommonFriends(Integer id, Integer otherId) {
-        /*//дорабатываю метод
-        List<User> listOfFriends = jdbcTemplate.query(sqlQuery, (rs, a) -> mapUser(rs), id);
-        return listOfFriends;*/
+//дорабатываю метод
         return null;
     }
 
     @Override
     public void addFriend(Integer id, Integer friendId) {
-        String sqlQuery = "insert into friendship (user_id, friend_id) values (?, ?)";
-        int count = jdbcTemplate.update(sqlQuery, id, friendId);
-        if (count == 0) {
-            throw new UserNotFoundException("Пользователя с id = " + id + " либо с id = " + friendId + "не существует");
+        if (id <= 0 || friendId <= 0) {
+            throw new UserNotFoundException("Отрицательный id пользователя");
         }
+        String sqlQuery = "insert into friendship (user_id, friend_id) values (?, ?)";
+        jdbcTemplate.update(sqlQuery, id, friendId);
     }
 
     @Override
