@@ -63,7 +63,7 @@ public class FilmDbStorage implements FilmStorage {
                 film.getDuration(),
                 film.getMpa().getId(),
                 film.getId());
-        if (updatedRows == 0 ) {
+        if (updatedRows == 0) {
             throw new FilmNotFoundException("Фильм с id " + film.getId() + " не найден");
         }
         return film;
