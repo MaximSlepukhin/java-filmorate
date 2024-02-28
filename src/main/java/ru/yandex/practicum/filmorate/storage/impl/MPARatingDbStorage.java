@@ -27,7 +27,6 @@ public class MPARatingDbStorage implements MPARatingStorage {
                 "FROM mpa " +
                 "WHERE mpa_id = ?";
         MPARating mpaRating = new MPARating();
-
         SqlRowSet mpaRatingRow = jdbcTemplate.queryForRowSet(queryMPARating, id);
         if (mpaRatingRow.next()) {
             mpaRating.setId(mpaRatingRow.getInt("mpa_id"));
