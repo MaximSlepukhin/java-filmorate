@@ -63,6 +63,7 @@ public class UserService {
     public User findUserById(Integer id) {
         return userStorage.findUserById(id);
     }
+
     public void checkUserExists(Integer id) {
         User user = findUserById(id);
         if (user == null) {
