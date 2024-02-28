@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Slf4j
-@Component
+@Component("MPARatingDbStorage")
 public class MPARatingDbStorage implements MPARatingStorage {
     private final JdbcTemplate jdbcTemplate;
 

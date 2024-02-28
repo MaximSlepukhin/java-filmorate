@@ -26,6 +26,7 @@ public class UserService {
     }
 
     public User updateUser(User user) {
+        checkUserExists(user.getId());
         return userStorage.updateUser(user);
     }
 
@@ -34,34 +35,39 @@ public class UserService {
     }
 
     public void addFriend(Integer id, Integer friendId) {
+        checkUserExists(id);
+        checkUserExists(friendId);
         userStorage.addFriend(id, friendId);
     }
 
     public void deleteFriend(Integer id, Integer friendId) {
+        checkUserExists(id);
+        checkUserExists(friendId);
         if (id.equals(friendId)) {
             throw new ValidationException("id равен friendId");
         }
         userStorage.deleteFriend(id, friendId);
     }
 
-    public void checkIfUserExists(Integer id) {
-        boolean isExist = userStorage.getUsers().stream().anyMatch(user -> user.getId() == id);
-        if (!isExist) {
-            throw new UserNotFoundException("Пользователя c id=" + id + " не сушествует");
-        }
-    }
-
     public List<User> getListOfFriends(Integer id) {
+        checkUserExists(id);
         return userStorage.getListOfFriends(id);
     }
 
     public List<User> getListOfCommonFriends(Integer id, Integer otherId) {
+        checkUserExists(id);
+        checkUserExists(otherId);
         return userStorage.getListOfCommonFriends(id, otherId);
     }
 
     public User findUserById(Integer id) {
-        checkIfUserExists(id);
         return userStorage.findUserById(id);
+    }
+    public void checkUserExists(Integer id) {
+        User user = findUserById(id);
+        if (user == null) {
+            throw new UserNotFoundException("Пользователь не найден");
+        }
     }
 }
 

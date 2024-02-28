@@ -19,8 +19,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 @Slf4j
-@Component
-@Qualifier("genreDbStorage")
+@Component("genreDbStorage")
 public class GenreDbStorage implements GenreStorage {
     private final JdbcTemplate jdbcTemplate;
 

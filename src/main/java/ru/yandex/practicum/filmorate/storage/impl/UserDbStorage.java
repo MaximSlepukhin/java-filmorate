@@ -18,8 +18,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-@Component
-@Qualifier("userDbStorage")
+@Component("userDbStorage")
 public class UserDbStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
 
@@ -119,9 +118,6 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public void addFriend(Integer id, Integer friendId) {
-        if (id <= 0 || friendId <= 0) {
-            throw new UserNotFoundException("Отрицательный id пользователя");
-        }
         String sqlQuery = "insert into friendship (user_id, friend_id) values (?, ?)";
         jdbcTemplate.update(sqlQuery, id, friendId);
     }
