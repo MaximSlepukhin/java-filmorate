@@ -191,4 +191,19 @@ class FilmorateApplicationTests {
         assertThat(listOfFilms.size())
                 .isEqualTo(1);
     }
+
+    @Test
+    public void testAddLike() {
+        User newUser = createTestUser();
+        UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
+        userStorage.createUser(newUser);
+        Film newFilm = createTestFilm();
+        FilmDbStorage filmStorage = new FilmDbStorage(jdbcTemplate);
+        filmStorage.addFilm(newFilm);
+
+        filmStorage.addLike(1,1);
+
+        assertThat(1)
+                .isEqualTo(filmStorage.getFilmById(1).getLikes().size());
+    }
 }
