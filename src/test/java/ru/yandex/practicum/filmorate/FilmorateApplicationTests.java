@@ -137,10 +137,12 @@ class FilmorateApplicationTests {
         userStorage.createUser(friend);
 
         userStorage.addFriend(1, 2);
+
         assertThat(1)
                 .isEqualTo(userStorage.getListOfFriends(1).size());
 
         userStorage.deleteFriend(1,2);
+
         assertThat(0)
                 .isEqualTo(userStorage.getListOfFriends(0).size());
     }
@@ -193,7 +195,7 @@ class FilmorateApplicationTests {
     }
 
     @Test
-    public void testAddLike() {
+    public void testAddAndDeleteLike() {
         User newUser = createTestUser();
         UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
         userStorage.createUser(newUser);
@@ -204,6 +206,10 @@ class FilmorateApplicationTests {
         filmStorage.addLike(1,1);
 
         assertThat(1)
+                .isEqualTo(filmStorage.getFilmById(1).getLikes().size());
+
+        filmStorage.deleteLike(1,1);
+        assertThat(0)
                 .isEqualTo(filmStorage.getFilmById(1).getLikes().size());
     }
 }
