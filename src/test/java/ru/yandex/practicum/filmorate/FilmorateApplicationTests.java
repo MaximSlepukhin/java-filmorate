@@ -23,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @JdbcTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
+
 class FilmorateApplicationTests {
     private final JdbcTemplate jdbcTemplate;
 
@@ -48,7 +49,6 @@ class FilmorateApplicationTests {
         newFilm.setMpa(mpa);
         return newFilm;
     }
-
 
     @Test
     public void testCreateAndFindUserById() {
@@ -94,7 +94,56 @@ class FilmorateApplicationTests {
                 .isEqualTo(1);
     }
 
+    @Test
+    public void testGetFriendsOfUser() {
+        User newUser = createTestUser();
+        Set<Integer> friends = new HashSet<>(0);
+        newUser.setFriends(friends);
+        UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
+        userStorage.createUser(newUser);
 
+        User friend = new User();
+        friend.setId(2);
+        friend.setName("Maxim");
+        friend.setLogin("newLogin");
+        friend.setEmail("qwerty@mail.ru");
+        friend.setBirthday(LocalDate.of(1990, 1, 1));
+        Set<Integer> fri = new HashSet<>(0);
+        friend.setFriends(fri);
+        userStorage.createUser(friend);
+
+        userStorage.addFriend(1, 2);
+
+        assertThat(1)
+                .isEqualTo(userStorage.getListOfFriends(1).size());
+    }
+
+    @Test
+    public void testDeleteFriendsOfUser() {
+        User newUser = createTestUser();
+        Set<Integer> friends = new HashSet<>(0);
+        newUser.setFriends(friends);
+        UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
+        userStorage.createUser(newUser);
+
+        User friend = new User();
+        friend.setId(2);
+        friend.setName("Maxim");
+        friend.setLogin("newLogin");
+        friend.setEmail("qwerty@mail.ru");
+        friend.setBirthday(LocalDate.of(1990, 1, 1));
+        Set<Integer> fri = new HashSet<>(0);
+        friend.setFriends(fri);
+        userStorage.createUser(friend);
+
+        userStorage.addFriend(1, 2);
+        assertThat(1)
+                .isEqualTo(userStorage.getListOfFriends(1).size());
+
+        userStorage.deleteFriend(1,2);
+        assertThat(0)
+                .isEqualTo(userStorage.getListOfFriends(0).size());
+    }
     @Test
     public void testCreateAndFindFilmById() {
         Film newFilm = createTestFilm();
@@ -140,29 +189,5 @@ class FilmorateApplicationTests {
 
         assertThat(listOfFilms.size())
                 .isEqualTo(1);
-    }
-
-    @Test
-    public void testGetFriendsOfUser() {
-        User newUser = createTestUser();
-        Set<Integer> friends = new HashSet<>(0);
-        newUser.setFriends(friends);
-        UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
-        userStorage.createUser(newUser);
-
-        User friend = new User();
-        friend.setId(2);
-        friend.setName("Maxim");
-        friend.setLogin("newLogin");
-        friend.setEmail("qwerty@mail.ru");
-        friend.setBirthday(LocalDate.of(1990, 1, 1));
-        Set<Integer> fri = new HashSet<>(0);
-        friend.setFriends(fri);
-        userStorage.createUser(friend);
-
-        userStorage.addFriend(1, 2);
-
-        assertThat(1)
-                .isEqualTo(userStorage.getListOfFriends(1).size());
     }
 }
