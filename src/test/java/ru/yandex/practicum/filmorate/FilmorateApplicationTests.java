@@ -144,6 +144,7 @@ class FilmorateApplicationTests {
         assertThat(0)
                 .isEqualTo(userStorage.getListOfFriends(0).size());
     }
+
     @Test
     public void testCreateAndFindFilmById() {
         Film newFilm = createTestFilm();
