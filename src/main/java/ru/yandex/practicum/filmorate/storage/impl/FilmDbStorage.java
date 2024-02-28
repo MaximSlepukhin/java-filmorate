@@ -127,7 +127,6 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public void deleteLike(Integer filmId, Integer userId) {
         String insertQuery = "delete from likes where film_id = ? AND user_id = ?";
-
         int updateRows = jdbcTemplate.update(insertQuery, filmId, userId);
         if (updateRows == 0) {
             throw new FilmNotFoundException("Фильм с id = " + filmId + "либо user_id =" + userId + " не найден.");
