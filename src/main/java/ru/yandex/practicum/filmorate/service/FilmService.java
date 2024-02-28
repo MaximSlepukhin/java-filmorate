@@ -31,11 +31,11 @@ public class FilmService {
         this.genreService = genreService;
     }
 
-    public Film postFilm(Film film) {
+    public Film addFilm(Film film) {
         if (film.getReleaseDate().isBefore(MIN_DATE_RELEASE)) {
             throw new ValidationException("Невозможно добавить фильм с датой релиза фильма ранее " + MIN_DATE_RELEASE);
         }
-        Film addedFilm = filmStorage.postFilm(film);
+        Film addedFilm = filmStorage.addFilm(film);
         if (film.getGenres() != null) {
            genreService.addGenresForFilm(film.getGenres(), addedFilm.getId());
 
@@ -65,7 +65,6 @@ public class FilmService {
     }
 
     public void addLike(Integer filmId, Integer userId) {
-
         filmStorage.addLike(filmId, userId);
     }
 

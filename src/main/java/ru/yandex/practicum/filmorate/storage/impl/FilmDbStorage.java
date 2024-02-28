@@ -32,7 +32,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Film postFilm(Film film) {
+    public Film addFilm(Film film) {
         String sqlQuery = "INSERT INTO film (film_name, description, release_date, duration, " +
                 "mpa_id) " + "VALUES (?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -50,7 +50,6 @@ public class FilmDbStorage implements FilmStorage {
         film.setId(filmId);
         return film;
     }
-
 
     @Override
     public Film updateFilm(Film film) {
@@ -72,7 +71,6 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Collection<Film> getFilms() {
-
         String filmQuery = "SELECT * FROM film AS f JOIN mpa AS m ON f.mpa_id = m.mpa_id ";
         List<Film> films = jdbcTemplate.query(filmQuery, (rs, rowNum) -> mapFilm(rs));
         return films;
@@ -80,12 +78,10 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film getFilmById(Integer id) {
-
         String filmQuery = "SELECT * " +
                 "FROM film AS f " +
                 "JOIN mpa AS m ON f.mpa_id = m.mpa_id " +
                 "WHERE film_id = ?";
-
         Film film = null;
         try {
             film = jdbcTemplate.queryForObject(filmQuery, (rs, a) -> mapFilm(rs), id);
@@ -111,7 +107,6 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private Integer mapLikes(ResultSet rs) throws SQLException {
-
         return rs.getInt("user_id");
     }
 
