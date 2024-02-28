@@ -44,7 +44,7 @@ public class MPARatingDbStorage implements MPARatingStorage {
         return jdbcTemplate.query(queryMPARating, this::mapRow);
     }
 
-    public MPARating mapRow (ResultSet resultSet, int rowMow) throws SQLException {
+    public MPARating mapRow(ResultSet resultSet, int rowMow) throws SQLException {
         MPARating mpaRating = new MPARating();
         mpaRating.setId(resultSet.getInt("mpa_id"));
         mpaRating.setName(resultSet.getString("mpa_name"));
