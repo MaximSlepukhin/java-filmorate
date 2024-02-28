@@ -14,6 +14,8 @@ import ru.yandex.practicum.filmorate.storage.impl.UserDbStorage;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -71,7 +73,7 @@ class FilmorateApplicationTests {
         updatedUser.setId(1);
         updatedUser.setName("Ivan");
         updatedUser.setLogin("newLogin");
-        updatedUser.setEmail("@mail.ru");
+        updatedUser.setEmail("qwerty@mail.ru");
         updatedUser.setBirthday(LocalDate.of(1990, 1, 1));
 
         User savedUser = userStorage.updateUser(updatedUser);
@@ -138,5 +140,29 @@ class FilmorateApplicationTests {
 
         assertThat(listOfFilms.size())
                 .isEqualTo(1);
+    }
+
+    @Test
+    public void testGetFriendsOfUser() {
+        User newUser = createTestUser();
+        Set<Integer> friends = new HashSet<>(0);
+        newUser.setFriends(friends);
+        UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
+        userStorage.createUser(newUser);
+
+        User friend = new User();
+        friend.setId(2);
+        friend.setName("Maxim");
+        friend.setLogin("newLogin");
+        friend.setEmail("qwerty@mail.ru");
+        friend.setBirthday(LocalDate.of(1990, 1, 1));
+        Set<Integer> fri = new HashSet<>(0);
+        friend.setFriends(fri);
+        userStorage.createUser(friend);
+
+        userStorage.addFriend(1, 2);
+
+        assertThat(1)
+                .isEqualTo(userStorage.getListOfFriends(1).size());
     }
 }
