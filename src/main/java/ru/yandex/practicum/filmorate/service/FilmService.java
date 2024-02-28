@@ -59,7 +59,7 @@ public class FilmService {
     public Collection<Film> getFilms() {
         Collection<Film> listFilms = filmStorage.getFilms();
         for (Film film : listFilms) {
-            film.setGenres(genreService.setGenresForFilmList(film.getId()));
+            film.setGenres(genreService.getGenresForFilmList(film.getId()));
         }
         return listFilms;
     }
@@ -75,14 +75,14 @@ public class FilmService {
 
     public Film findFilmById(Integer id) {
         Film addedFilm = filmStorage.getFilmById(id);
-        addedFilm.setGenres(genreService.setGenresForFilmList(addedFilm.getId()));
+        addedFilm.setGenres(genreService.getGenresForFilmList(addedFilm.getId()));
         return addedFilm;
     }
 
     public Collection<Film> topFilms(Integer count) {
         Collection<Film> listFilms = filmStorage.getPopularFilms(count);
         for (Film film : listFilms) {
-            film.setGenres(genreService.setGenresForFilmList(film.getId()));
+            film.setGenres(genreService.getGenresForFilmList(film.getId()));
         }
         return listFilms;
     }
