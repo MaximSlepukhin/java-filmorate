@@ -136,10 +136,6 @@ public class UserDbStorage implements UserStorage {
         user.setBirthday(rs.getDate("birthday").toLocalDate());
         return user;
     }
-
-    private Integer mapLikes(ResultSet rs) throws SQLException {
-        return rs.getInt("film_id");
-    }
 }
 
 
