@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -27,6 +26,7 @@ public class UserService {
     }
 
     public User updateUser(User user) {
+        checkUserExists(user.getId());
         return userStorage.updateUser(user);
     }
 
@@ -35,59 +35,40 @@ public class UserService {
     }
 
     public void addFriend(Integer id, Integer friendId) {
-        checkIfUserExists(id);
-        checkIfUserExists(friendId);
-
-        User userOne = findUserById(id);
-        User userTwo = findUserById(friendId);
-
-        userOne.friends.add(friendId);
-        userTwo.friends.add(id);
+        checkUserExists(id);
+        checkUserExists(friendId);
+        userStorage.addFriend(id, friendId);
     }
 
     public void deleteFriend(Integer id, Integer friendId) {
+        checkUserExists(id);
+        checkUserExists(friendId);
         if (id.equals(friendId)) {
             throw new ValidationException("id равен friendId");
         }
-        checkIfUserExists(id);
-        checkIfUserExists(friendId);
-
-        User firstUser = findUserById(id);
-        User secondUser = findUserById(friendId);
-
-        firstUser.friends.remove(secondUser.getId());
-        secondUser.friends.remove(firstUser.getId());
-
+        userStorage.deleteFriend(id, friendId);
     }
 
-    public void checkIfUserExists(Integer id) {
-        boolean isExist = userStorage.getUsers().stream().anyMatch(user -> user.getId() == id);
-        if (!isExist) {
-            throw new UserNotFoundException("Пользователя c id=" + id + " не сушествует");
-        }
-    }
-
-    public Set<User> getListOfFriends(Integer id) {
-        checkIfUserExists(id);
-        Set<User> friendList = userStorage.getUsers().stream()
-                .filter(u -> findUserById(id).friends.contains(u.getId()))
-                .collect(Collectors.toSet());
-        Set<User> result = new TreeSet<>(Comparator.comparingInt(User::getId));
-        result.addAll(friendList);
-        return result;
+    public List<User> getListOfFriends(Integer id) {
+        checkUserExists(id);
+        return userStorage.getListOfFriends(id);
     }
 
     public List<User> getListOfCommonFriends(Integer id, Integer otherId) {
-        checkIfUserExists(id);
-        checkIfUserExists(otherId);
-        return getListOfFriends(id).stream()
-                .filter(f -> getListOfFriends(otherId).contains(f))
-                .collect(Collectors.toList());
+        checkUserExists(id);
+        checkUserExists(otherId);
+        return userStorage.getListOfCommonFriends(id, otherId);
     }
 
     public User findUserById(Integer id) {
-        checkIfUserExists(id);
         return userStorage.findUserById(id);
+    }
+
+    public void checkUserExists(Integer id) {
+        User user = findUserById(id);
+        if (user == null) {
+            throw new UserNotFoundException("Пользователь не найден");
+        }
     }
 }
 

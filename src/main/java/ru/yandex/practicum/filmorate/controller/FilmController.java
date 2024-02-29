@@ -24,9 +24,9 @@ public class FilmController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Film postFilm(@Valid @RequestBody Film film) {
+    public Film addFilm(@Valid @RequestBody Film film) {
         log.info("Запрос на добавление фильма принят.");
-        return filmService.postFilm(film);
+        return filmService.addFilm(film);
     }
 
     @PutMapping
