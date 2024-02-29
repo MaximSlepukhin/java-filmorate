@@ -32,6 +32,6 @@ public class GenreService {
     }
 
     Set<Genre> getGenresForFilmList(Integer filmId) {
-        return genreStorage.setGenresForFilmList(filmId);
+        return genreStorage.getGenresForFilmList(filmId);
     }
 }

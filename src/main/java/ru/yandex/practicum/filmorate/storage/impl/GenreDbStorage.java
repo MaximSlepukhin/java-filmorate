@@ -89,7 +89,7 @@ public class GenreDbStorage implements GenreStorage {
     }
 
     @Override
-    public Set<Genre> setGenresForFilmList(Integer filmId) {
+    public Set<Genre> getGenresForFilmList(Integer filmId) {
         String genresQuery = "SELECT * " +
                 "FROM film_genre AS fg " +
                 "JOIN genre AS g ON fg.genre_id = g.genre_id " +

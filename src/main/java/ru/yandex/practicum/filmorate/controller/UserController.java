@@ -38,7 +38,7 @@ public class UserController {
 
     @PutMapping("{id}/friends/{friendId}")
     @ResponseStatus(HttpStatus.OK)
-    public void addFriend(@PathVariable String id, @PathVariable String friendId) {
+    public void addFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
         log.info("Запрс на добавление в друзья принят.");
         userService.addFriend(Integer.valueOf(id), Integer.valueOf(friendId));
     }

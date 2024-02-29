@@ -15,5 +15,5 @@ public interface GenreStorage {
 
     Set<Genre> updateGenresForFilm(Set<Genre> genresFromFilm, Integer id);
 
-    Set<Genre> setGenresForFilmList(Integer filmId);
+    Set<Genre> getGenresForFilmList(Integer filmId);
 }
